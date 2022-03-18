@@ -1,5 +1,5 @@
 #!/bin/bash 
-set -x
+set +x
 #sript will craete a database for application 
 #Execute it on the DB server.
 
@@ -36,7 +36,7 @@ sed "s/USRMYQLP/${USRMYQLP}/g" -i /home/opc/sql/create.database.sql
 
 mysql --login-path=r3306  < /home/opc/sql/create.database.sql
 
-mysql -u ${APPUSER} -p${USRMYQLP} -h 10.10.1.12 -e "show databases"  
+mysql -u ${APPUSER} -p${USRMYQLP} -h 10.10.1.11 -e "show databases"  
 
 echo "----"
 echo "Application user/passwrod in file .private/.my.p" 
