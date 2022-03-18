@@ -84,14 +84,7 @@ if [[ "$HOSTNAME" == *"app1"* ]]; then
   #Update dnf.conf file - add proxy line
   echo "proxy=http://10.10.1.11:3128" >>  /etc/dnf/dnf.conf
   echo "" >>  /etc/dnf/dnf.conf
-else 
-  #Update dnf.conf file - add proxy line, All servers need to connect throw proxy server
-  echo "proxy=http://10.10.1.11:3128" >>  /etc/dnf/dnf.conf
-  echo "" >>  /etc/dnf/dnf.conf
-  dnf -y update
-  dnf install -y oraclelinux-release-el8
-  dnf config-manager --set-enabled ol8_developer_EPEL
-  dnf clean all 
+
 fi
 
  
@@ -140,9 +133,7 @@ if [[ "$HOSTNAME" == *"app1"* ]]; then
 
 fi
 
-if [[ "$HOSTNAME" == *"app2"* ]]; then
-  dnf install -y sendmail htop tmux mc rsync clamav clamav-update rclone setroubleshoot-server setools-console nfs-utils
-fi
+
 
 
 #Backup original configuration 
@@ -183,10 +174,8 @@ mkdir -p /share/log/clamav
 exportfs -a
 systemctl enable --now nfs-server
 showmount -e
-if [[ "$HOSTNAME" != *"app1"* ]] ; then
-  #Mount sharepoint from app1
-  mount -t nfs 10.10.1.11:/share /mnt/share_app1
-fi
+
+mount -t nfs 10.10.1.11:/share /mnt/share_app1
 
 #Set sendmail to auto start ( it required SNMP configuration to send out emails throw GMAIL or other service)
 chkconfig sendmail on
@@ -203,77 +192,31 @@ set -x
 #Install MySQL on app2 and app4
 echo "-----"
 echo "If this is app2 or app4 install MySQL server"
-if [[ "$HOSTNAME" == *"app2"* ]]  ; then
-  echo "Install MySQL server "
-  /home/opc/bin/03.server-instalation-mysql.sh
-else  
-  echo "this is not app2 or app4 server"
-fi
- 
-set +x 
 
-if [[ "$HOSTNAME" == *"app1"* ]] ; then
-  # Install oci tools as root
-  #echo "----" 
-  #echo "Install OCI tools"
-  #mkdir /root/install
-  #cd /root/install
-  #wget https://raw.githubusercontent.com/oracle/oci-cli/master/scripts/install/install.sh
-  #mv install.sh oci_install.sh
-  #chmod 700 oci_install.sh
-  #./oci_install.sh --accept-all-defaults
-  #rm -f ./oci_install.sh
-  
-  #bash -c "$(curl -L https://raw.githubusercontent.com/oracle/oci-cli/master/scripts/install/install.sh) --accept-all-defaults"
+echo "Install MySQL server "
+/home/opc/bin/03.server-instalation-mysql.sh
 
 
-  #Ceate rsa key for oci
-  #mkdir ~/.oci
-  #cd ~/.oci
-  #openssl genrsa -out ~/.oci/oci_api_key.pem -aes128 2048   
-  #no passphrase 
-  #openssl genrsa -out ~/.oci/oci_api_key.pem 2048   
-  #chmod go-rwx ~/.oci/oci_api_key.pem  
-  #openssl rsa -pubout -in ~/.oci/oci_api_key.pem -out ~/.oci/oci_api_key_public.pem 
+echo "-----"
+echo "Install Certboot"
+python -m ensurepip --upgrade
+get-pip.py
+pip3 install certbot
 
-  #Install Certboot
-  #ln -s /var/lib/snapd/snap /snap 
-  #sudo snap install core
-  #sudo snap refresh core
-  #snap install --classic certbot
-  #ln -s /snap/bin/certbot /usr/bin/certbot
-  #snap set certbot trust-plugin-with-root=ok
-  echo "-----"
-  echo "Install Certboot"
-  python -m ensurepip --upgrade
-  get-pip.py
-  pip3 install certbot
-
-  #Create a root rsa key 
-  ssh-keygen -b 2048 -t rsa -f ~/.ssh/id_rsa_rsync  -q -N ""
-  cp ~/.ssh/id_rsa_rsync.pub /share/root_app1_id_rsa_rsync.pub
-  chown 600 ~/.ssh/*
+#Create a root rsa key 
+ssh-keygen -b 2048 -t rsa -f ~/.ssh/id_rsa_rsync  -q -N ""
+cp ~/.ssh/id_rsa_rsync.pub /share/root_app1_id_rsa_rsync.pub
+chown 600 ~/.ssh/*
 
 
-  #test website up
-  echo -e "\n-----"
-  echo "curl -v http://localhost/health-check.php"
-  echo "\n-----"
-  curl -v http://localhost/health-check.php
-  echo "\n-----"
+#test website up
+echo -e "\n-----"
+echo "curl -v http://localhost/health-check.php"
+echo "\n-----"
+curl -v http://localhost/health-check.php
+echo "\n-----"
 
 
-else
-  echo "Execute on app2"
-  #Execute on app 2,3,4
-  #Update authorized_keys 
-  if [ ! -e ~/.ssh ]; then 
-    mkdir ~/.ssh
-    chmod 700 ~/.ssh
-  fi
-  cat /mnt/share_app1/root_app1_id_rsa_rsync.pub > ~/.ssh/authorized_keys
-  chmod 600 ~/.ssh/authorized_keys
-fi
 
 date
 date >> /tmp/instalation-script.txt
