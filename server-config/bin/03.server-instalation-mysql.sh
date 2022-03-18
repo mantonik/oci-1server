@@ -21,7 +21,7 @@ LOGFILE=/root/log/mysql.setup.log
 function update_mysql_root_password() {
   echo "Update MySQL Root Passowrd"
   
-  export ROOTMYQL=`cat /mnt/share_app2/.my.p|grep root`
+  export ROOTMYQL=`cat /share/.my.p|grep root`
   export ROOTMYQLP=${ROOTMYQL:5}
   echo "----------------------------"
   echo "ROOTMYQLP: "${ROOTMYQLP}
@@ -41,7 +41,7 @@ function update_mysql_root_password() {
 function set_root_login_path() {
 
   echo "Set Root login-path"
-  export ROOTMYQL=`cat /mnt/share_app2/.my.p|grep root`
+  export ROOTMYQL=`cat /share/.my.p|grep root`
   export ROOTMYQLP=${ROOTMYQL:5}
   
 
@@ -104,10 +104,6 @@ systemctl start mysqld
 echo "Create .private folder to store root password"
 mkdir ~/.private
 chmod 700 ~/.private
-
-#rm -f /share/.my.p
-
-#Run this only on app2 server
 
 echo "Generate root and repusr password"
 ROOTMYQLP=`tr -dc A-Za-z0-9 </dev/urandom | head -c 20`

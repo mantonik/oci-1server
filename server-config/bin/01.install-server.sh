@@ -10,9 +10,6 @@ echo "Run instalation script"
 
 sudo /home/opc/bin/02.server-instalation-script-app.sh
 
-#Run DB instalation on app2 and app4 only 
-sudo /home/opc/bin/03.server-instalation-mysql.sh
-
 echo "Server instalation completed"
 echo "---------------------------"
 echo "Version: ${version}"

@@ -164,9 +164,6 @@ mkdir /share
 chmod 755 /share
 touch /share/$HOSTNAME.txt
 mkdir -p /mnt/share_app1
-mkdir -p /mnt/share_app2
-#mkdir -p /mnt/share_app3
-#mkdir -p /mnt/share_app4
 
 #Create clamav log foler 
 mkdir -p /share/log/clamav
@@ -191,11 +188,9 @@ echo "Restart services"
 set -x
 #Install MySQL on app2 and app4
 echo "-----"
-echo "If this is app2 or app4 install MySQL server"
 
 echo "Install MySQL server "
 /home/opc/bin/03.server-instalation-mysql.sh
-
 
 echo "-----"
 echo "Install Certboot"

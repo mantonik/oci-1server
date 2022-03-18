@@ -14,11 +14,11 @@ SErver name has should be name like
 somethingappX
 
 ...app1
-...app2
 ##########
 Cloud Init script 
 #!/bin/bash 
 /bin/dnf -y update
+sudo yum install -y tmux
 
 ##########
 app1
@@ -38,7 +38,7 @@ cp -a ${REPO_NAME}-${REPO_BRANCH}/server-config/* ${HOME}/
 cd ${HOME}
 ls -l
 
-sudo ./bin/01.install-server.sh
+sudo /home/opc/bin/01.install-server.sh
 
 ###########
 To create DB execute script 
