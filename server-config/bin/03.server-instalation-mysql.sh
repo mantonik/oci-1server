@@ -93,6 +93,9 @@ cat /etc/my.cnf.d/mysql-server.cnf
 echo "Start MySQLD"
 systemctl start mysqld
 
+#Set autostart of mysqld
+chkconfig mysqld on
+
 #Installing on server 2
 #Generate root and usrrep passwrod and put files on share point and in root file 
 # .private 
@@ -105,14 +108,11 @@ echo "Create .private folder to store root password"
 mkdir ~/.private
 chmod 700 ~/.private
 
-echo "Generate root and repusr password"
+echo "Generate root password"
 ROOTMYQLP=`tr -dc A-Za-z0-9 </dev/urandom | head -c 20`
 export ROOTMYQLP="${ROOTMYQLP:1:8}1Yk"
-REPUSRMYQLP=`tr -dc A-Za-z0-9 </dev/urandom | head -c 20`
-export REPUSRMYQLP="${REPUSRMYQLP:6:8}4hD"
 
 echo "root:${ROOTMYQLP}" > ~/.private/.my.p
-echo "repusr:${REPUSRMYQLP}" >> ~/.private/.my.p
 chmod 400 ~/.private/.my.p
 
 cp ~/.private/.my.p /share

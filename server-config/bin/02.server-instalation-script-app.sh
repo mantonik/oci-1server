@@ -64,77 +64,65 @@ mkdir ~/log
 #delete proxy entry from dnf config file
 sed -i '/^proxy=http/d' /etc/dnf/dnf.conf
 
-echo "Hostname: $HOSTNAME"
-if [[ "$HOSTNAME" == *"app1"* ]]; then
-  echo "Execute configuration for app1 server"
-  #Oracle Linux
-  
-  dnf -y update
-  dnf install -y oraclelinux-release-el8
-  dnf config-manager --set-enabled ol8_developer_EPEL
-  dnf clean all 
+echo "Execute configuration for app1 server"
+#Oracle Linux
 
-  echo "This is app1 servers, install squid."
-  dnf -y install squid
-  chkconfig squid on
-  echo "Restart squid"
-  systemctl stop squid
-  systemctl start squid
+dnf -y update
+dnf install -y oraclelinux-release-el8
+dnf config-manager --set-enabled ol8_developer_EPEL
+dnf clean all 
 
-  #Update dnf.conf file - add proxy line
-  echo "proxy=http://10.10.1.11:3128" >>  /etc/dnf/dnf.conf
-  echo "" >>  /etc/dnf/dnf.conf
+echo "This is app1 servers, install squid."
+dnf -y install squid
+chkconfig squid on
+echo "Restart squid"
+systemctl stop squid
+systemctl start squid
 
-fi
+#Update dnf.conf file - add proxy line
+echo "proxy=http://10.10.1.11:3128" >>  /etc/dnf/dnf.conf
+echo "" >>  /etc/dnf/dnf.conf
 
- 
+
 echo "Install required packages"
-if [[ "$HOSTNAME" == *"app1"* ]]; then
+dnf install -y nginx php php-fpm php-mysqlnd php-json sendmail htop tmux mc rsync clamav clamav-update rclone setroubleshoot-server setools-console nfs-utils
 
-  dnf install -y nginx php php-fpm php-mysqlnd php-json sendmail htop tmux mc rsync clamav clamav-update rclone setroubleshoot-server setools-console nfs-utils
+#Setup web folder structure
+mkdir -p /data/www/default/htdocs
+dnf module list php
+dnf -y module reset php
+#set php 7.4 as default 
+dnf -y module enable php:7.4
+dnf module list php
 
-  #Setup web folder structure
-  mkdir -p /data/www/default/htdocs
-  dnf module list php
-  dnf -y module reset php
-  #set php 7.4 as default 
-  dnf -y module enable php:7.4
-  dnf module list php
+#Add user opc to nginx group
+usermod -G opc nginx
 
-  #Add user opc to nginx group
-  usermod -G opc nginx
+#PHP configuration 
+echo "#Enable mysqli extension" >> /etc/php.ini
+echo "extension=mysqli" >> /etc/php.ini
+sed -i 's/user = apache/user = nginx/g' /etc/php-fpm.d/www.conf
+sed -i 's/group = apache/group = nginx/g' /etc/php-fpm.d/www.conf
 
-  #PHP configuration 
-  echo "#Enable mysqli extension" >> /etc/php.ini
-  echo "extension=mysqli" >> /etc/php.ini
-  sed -i 's/user = apache/user = nginx/g' /etc/php-fpm.d/www.conf
-  sed -i 's/group = apache/group = nginx/g' /etc/php-fpm.d/www.conf
+#mv /usr/share/nginx/html/* /data/www/default/htdocs
+rm -fr /usr/share/nginx/html
+ln -s /data/www/default/htdocs /usr/share/nginx/html
+rm -f /data/www/default/htdocs/index.html
 
-  #mv /usr/share/nginx/html/* /data/www/default/htdocs
-  rm -fr /usr/share/nginx/html
-  ln -s /data/www/default/htdocs /usr/share/nginx/html
-  rm -f /data/www/default/htdocs/index.html
+#set services to start automaticly
+echo "Set auto startup of applications"
+chkconfig nginx on
+chkconfig php-fpm on
 
-  #set services to start automaticly
-  echo "Set auto startup of applications"
-  chkconfig nginx on
-  chkconfig php-fpm on
+#SET enforcing for current session
+echo "Set SELINUX permission for nginx to serve from /data/www folder"
+setenforce 1
+#sealert -a /var/log/audit.d/audit.log 
+semodule -i /etc/selinux/nginx.pp
+semodule -i /etc/selinux/my-phpfpm.pp
 
-  #SET enforcing for current session
-  echo "Set SELINUX permission for nginx to serve from /data/www folder"
-  setenforce 1
-  #sealert -a /var/log/audit.d/audit.log 
-  semodule -i /etc/selinux/nginx.pp
-  semodule -i /etc/selinux/my-phpfpm.pp
-
-  setsebool httpd_can_network_connect on
-  setsebool httpd_use_nfs on
-
-
-fi
-
-
-
+setsebool httpd_can_network_connect on
+setsebool httpd_use_nfs on
 
 #Backup original configuration 
 cp /etc/ssh/sshd_config /etc/ssh/sshd_config.${DT}
