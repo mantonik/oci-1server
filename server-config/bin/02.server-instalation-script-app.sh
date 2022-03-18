@@ -186,11 +186,6 @@ echo "Restart services"
 /home/opc/bin/restart_services.sh now
 
 set -x
-#Install MySQL on app2 and app4
-echo "-----"
-
-echo "Install MySQL server "
-/home/opc/bin/03.server-instalation-mysql.sh
 
 echo "-----"
 echo "Install Certboot"
