@@ -120,7 +120,6 @@ setenforce 1
 #sealert -a /var/log/audit.d/audit.log 
 semodule -i /etc/selinux/nginx.pp
 semodule -i /etc/selinux/my-phpfpm.pp
-
 setsebool httpd_can_network_connect on
 setsebool httpd_use_nfs on
 
@@ -186,15 +185,12 @@ ssh-keygen -b 2048 -t rsa -f ~/.ssh/id_rsa_rsync  -q -N ""
 cp ~/.ssh/id_rsa_rsync.pub /share/root_app1_id_rsa_rsync.pub
 chown 600 ~/.ssh/*
 
-
 #test website up
 echo -e "\n-----"
 echo "curl -v http://localhost/health-check.php"
 echo "\n-----"
 curl -v http://localhost/health-check.php
 echo "\n-----"
-
-
 
 date
 date >> /tmp/instalation-script.txt
@@ -204,4 +200,3 @@ echo "-----    Version 02.server-instalation-script-app.sh: ${version}    -----"
 echo ""
 
 exit
-
