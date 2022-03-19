@@ -9,7 +9,7 @@ fi
 
 echo "---------------------------"
 #get root dir from configuration file 
-ROOT_DIR=`/etc/nginx/conf.d/${DOMAIN}.conf|grep "root"|grep "/data/www"|grep -v "#"|sed -s " "|cut -d " " -f 4|sed 's|;||'`
+ROOT_DIR=`cat /etc/nginx/conf.d/${DOMAIN}.conf|grep "root"|grep "/data/www"|grep -v "#"|sed -s " "|cut -d " " -f 4|sed 's|;||'`
 
 if [ ${ROOT_DIR}"x" == "x" ]; then 
   echo "ROOT directory is empty - exit"
