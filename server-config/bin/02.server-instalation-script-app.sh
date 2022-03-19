@@ -178,7 +178,8 @@ echo "-----"
 echo "Install Certboot"
 python -m ensurepip --upgrade
 get-pip.py
-pip3 install certbot
+pip3 install certbot certbot-nginx
+ln -s /usr/local/bin/certbot /usr/bin/certbot
 
 #Create a root rsa key 
 ssh-keygen -b 2048 -t rsa -f ~/.ssh/id_rsa_rsync  -q -N ""

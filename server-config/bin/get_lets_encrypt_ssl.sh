@@ -27,9 +27,9 @@ fi
 
 echo "Generate Let's encrytp SSL certificate for"
 echo "Domain: "${DOMAIN}
-echo "ROOT_DIR: " ${ROOT_DIR}
+echo "ROOT_DIR:"${ROOT_DIR}":"
 echo "---------------------------"
-/usr/local/bin/certbot --webroot -w ${ROOT_DIR}/htdocs  -d ${DOMAIN} -d www.${DOMAIN}
+/usr/local/bin/certbot --nginx --webroot -w ${ROOT_DIR}/htdocs  -d ${DOMAIN} -d www.${DOMAIN}
 
 service nginx restart
 
