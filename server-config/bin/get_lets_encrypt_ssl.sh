@@ -13,13 +13,15 @@ ROOT_DIR=`/etc/nginx/conf.d/${DOMAIN}.conf|grep "root"|grep "/data/www"|grep -v 
 
 if [ ${ROOT_DIR}"x" == "x" ]; then 
   echo "ROOT directory is empty - exit"
+  exit
 fi
 
 if [ ! -e ${ROOT_DIR} ]; then 
   echo "--------------------------"
   echo "ROOT_DIR " ${ROOT_DIR}
   echo "doesn't exist - exit"
-  echo "--------------------------"
+  echo "--------------------------" 
+  exit
 fi
 
 
@@ -27,7 +29,7 @@ echo "Generate Let's encrytp SSL certificate for"
 echo "Domain: "${DOMAIN}
 echo "ROOT_DIR: " ${ROOT_DIR}
 echo "---------------------------"
-certbot --webroot -w ${ROOT_DIR}/htdocs  -d ${DOMAIN} -d www.${DOMAIN}
+/usr/local/bin/certbot --webroot -w ${ROOT_DIR}/htdocs  -d ${DOMAIN} -d www.${DOMAIN}
 
 service nginx restart
 
