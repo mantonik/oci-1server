@@ -14,7 +14,9 @@
 20 11 * * 1-6 /usr/bin/clamscan --detect-pua -i -r /home --log="/share/log/clamav/$HOSTNAME_clamscan_home_$(date +\%Y-\%m-\%d).log" 2>/dev/null
 30 11 * * 0 /usr/bin/clamscan --detect-pua -i -r / --log="/share/log/clamav/$HOSTNAME_clamscan_full_$(date +\%Y-\%m-\%d).log" 2>/dev/null
 # Daily update.
-21 1 * * * /bin/dnf -y update
+21 0 * * * /bin/dnf -y update
 # Daily Service restart.
 0 1 * * * /home/opc/bin/services.restart.sh
+#Renew SSL certificate
+5 0 * * * /home/opc/bin/renew_lets_encrypt_ssl.sh
 # END
