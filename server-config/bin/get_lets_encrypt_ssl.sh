@@ -1,5 +1,9 @@
 #!/bin/bash 
 
+#Article for setup SSL configuration 
+# https://haydenjames.io/how-to-set-up-an-nginx-certbot/
+
+
 if [ $1"x" == "x" ]; then 
   echo "Enter domain name:"
   read DOMAIN 
@@ -29,7 +33,9 @@ echo "Generate Let's encrytp SSL certificate for"
 echo "Domain: "${DOMAIN}
 echo "ROOT_DIR:"${ROOT_DIR}":"
 echo "---------------------------"
-/usr/local/bin/certbot --nginx --webroot -w ${ROOT_DIR}/htdocs  -d ${DOMAIN} -d www.${DOMAIN}
+#/usr/local/bin/certbot --nginx --webroot -w ${ROOT_DIR}/htdocs  -d ${DOMAIN} -d www.${DOMAIN}
+
+/usr/local/bin/certbot --nginx -d ${DOMAIN} -d www.${DOMAIN}
 
 service nginx restart
 
