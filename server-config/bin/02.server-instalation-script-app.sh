@@ -22,7 +22,10 @@
 # 2/13 - add change permission to root/ id_rsa files 
 # 2/20 - add mysql instalation check 
 #       - add else for installing mysql
-# 4/13/2022 MA update script for 1 app and 1 db server instalation , remove reference to app3-4 as this will be just app instalation on app1 and mysql instalation on app2 
+# 3/13/2022 MA update script for 1 app and 1 db server instalation , remove reference to app3-4 as this will be just app instalation on app1 and mysql instalation on app2 
+# 3/22/22 MA - allow db connection throw SELinux
+#
+#
 ##################
 #Parameters 
 ##################
@@ -121,6 +124,7 @@ setenforce 1
 semodule -i /etc/selinux/nginx.pp
 semodule -i /etc/selinux/my-phpfpm.pp
 setsebool httpd_can_network_connect on
+setsebool -P httpd_can_network_connect_db 1
 setsebool httpd_use_nfs on
 
 #Backup original configuration 
