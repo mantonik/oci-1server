@@ -2,6 +2,9 @@
 set +x
 #sript will craete a database for application 
 #Execute it on the DB server.
+# 3/20/22 Add database to file 
+#
+#
 
 if [ "$EUID" -ne 0 ]
   then
@@ -26,7 +29,7 @@ echo
 echo "application user: "${APPUSER}
 echo "MySQL passwrod:   " ${USRMYQLP}
 
-echo "${APPUSER}:${USRMYQLP}" >> ~/.private/.my.p
+echo "${DATABASE}:${APPUSER}:${USRMYQLP}" >> ~/.private/.my.p
 
 sed "s/APPUSER/${APPUSER}/g" < /home/opc/sql/create.database.template.sql > /home/opc/sql/create.database.sql
 sed "s/DATABASENAME/${DATABASE}/g" -i /home/opc/sql/create.database.sql

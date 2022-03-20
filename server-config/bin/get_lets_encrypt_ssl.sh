@@ -2,6 +2,8 @@
 
 #Article for setup SSL configuration 
 # https://haydenjames.io/how-to-set-up-an-nginx-certbot/
+#3/20/22 Remove www. domain from certboot creation.
+#Each domain has to have a A record set in DNS
 
 
 if [ $1"x" == "x" ]; then 
@@ -35,7 +37,8 @@ echo "ROOT_DIR:"${ROOT_DIR}":"
 echo "---------------------------"
 #/usr/local/bin/certbot --nginx --webroot -w ${ROOT_DIR}/htdocs  -d ${DOMAIN} -d www.${DOMAIN}
 
-/usr/local/bin/certbot --nginx -d ${DOMAIN} -d www.${DOMAIN}
+/usr/local/bin/certbot --nginx -d ${DOMAIN}
+# -d www.${DOMAIN}
 
 service nginx restart
 
